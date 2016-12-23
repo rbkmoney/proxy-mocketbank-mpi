@@ -48,14 +48,14 @@ params:
 version: '2'
 services:
 
-  proxy_test_mpi:
+  proxy_mocketbank_mpi:
     image: dr.rbkmoney.com/rbkmoney/proxy-mocketbank-mpi:last
     environment:
       - SERVICE_NAME=proxy_mocketbank_mpi
     command: |
       -Xms64m -Xmx256m
       -jar /opt/proxy-mocketbank-mpi/proxy-mocketbank-mpi.jar
-      --logging.file=/var/log/proxy-test-mpi/proxy-mocketbank-mpi.json
+      --logging.file=/var/log/proxy-mocketbank-mpi/proxy-mocketbank-mpi.json
       --proxy-test-mpi.callbackUrl=http://proxy-mocketbank-mpi:8080
     working_dir: /opt/proxy-mocketbank-mpi
     restart: on-failure:3
