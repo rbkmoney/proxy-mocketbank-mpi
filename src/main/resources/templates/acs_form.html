@@ -91,8 +91,7 @@
 <script>
     (function () {
         var $date = document.getElementById('js-date');
-        var date = new Date();
-        $date.innerHTML = String(date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear());
+        $date.innerHTML = String(new Date().toISOString().slice(0,10).replace(/-/g,"."));
     }());
 </script>
 </html>
