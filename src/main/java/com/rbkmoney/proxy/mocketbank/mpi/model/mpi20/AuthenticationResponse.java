@@ -7,11 +7,15 @@ import lombok.*;
 @Builder
 public class AuthenticationResponse {
 
-    private String transactionId;
+    private String threeDSServerTransID;
 
     @JsonUnwrapped
     private Error error;
 
     private String transStatus;
+
+    private String acsUrl;
+
+    private String creq;
 
 }

@@ -7,12 +7,14 @@ import lombok.*;
 @Builder
 public class PreparationResponse {
 
-    private String transactionId;
+    private String threeDSServerTransID;
 
     @JsonUnwrapped
     private Error error;
 
     private String protocolVersion;
 
-    private String html;
+    private String threeDSMethodURL;
+
+    private String threeDSMethodData;
 }

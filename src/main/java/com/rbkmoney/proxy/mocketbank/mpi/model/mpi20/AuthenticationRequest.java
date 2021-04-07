@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Data
 public class AuthenticationRequest {
-    private String transactionId;
+    private String threeDSServerTransID;
 
     @ToString.Exclude
     private String pan;

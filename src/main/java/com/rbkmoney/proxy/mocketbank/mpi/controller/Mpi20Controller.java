@@ -26,7 +26,7 @@ public class Mpi20Controller {
                 .findFirst()
                 .map(c -> c.prepareHandle(preparationRequest))
                 .orElseThrow();
-        cardStorage.save(preparationRequest.getPan(), preparationResponse.getTransactionId());
+        cardStorage.save(preparationRequest.getPan(), preparationResponse.getThreeDSServerTransID());
         return preparationResponse;
     }
 
@@ -42,22 +42,29 @@ public class Mpi20Controller {
     @PostMapping(value = "/result")
     public ResultResponse result(@RequestBody ResultRequest resultRequest) {
         return cardHandlers.stream()
-                .filter(c -> c.isHandle(cardStorage.getCard(resultRequest.getTransactionId())))
+                .filter(c -> c.isHandle(cardStorage.getCard(resultRequest.getThreeDSServerTransID())))
                 .findFirst()
                 .map(c -> c.resultHandle(resultRequest))
                 .orElseThrow();
     }
 
-    @RequestMapping(value = "/acs", method = RequestMethod.POST)
-    public ModelAndView formAcs(@RequestParam(value = "creq") String creq,
+    @RequestMapping(value = "/threeDsMethod", method = RequestMethod.POST)
+    public ModelAndView threeDsMethod(@RequestParam(value = "threeDSMethodData") String threeDSMethodData,
                                 @RequestParam(value = "termUrl") String termUrl) {
+        log.info("Form threeDsMethod 2.0 input params: threeDSMethodData {}, termUrl {}", threeDSMethodData, termUrl);
+        ModelAndView model = new ModelAndView();
+        model.setViewName("threeDsMethod_2.0_form");
+        model.addObject("action", termUrl);
+        model.addObject("threeDSMethodData", threeDSMethodData);
+        log.info("Form threeDsMethod 2.0 show the form");
+        return model;
+    }
+
+    @RequestMapping(value = "/acs", method = RequestMethod.POST)
+    public ModelAndView acs(@RequestParam(value = "creq") String creq,
+                            @RequestParam(value = "termUrl") String termUrl) {
         log.info("Form ACS 2.0 input params: creq {}, termUrl {}", creq, termUrl);
         ModelAndView model = new ModelAndView();
-        if (!termUrl.startsWith("https://")) {
-            log.warn("Form ACS 2.0, wrong termUrl {}", termUrl);
-            model.setViewName("empty");
-            return model;
-        }
         model.setViewName("acs_2.0_form");
         model.addObject("action", termUrl);
         model.addObject("pan", "XXXX XXXX XXXX XXXX");

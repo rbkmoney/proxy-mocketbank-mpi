@@ -12,16 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @Configuration
 @ConfigurationProperties("mpi20")
 public class Mpi20Properties {
-
-    private String url;
-    private String threeDsServerUrl;
-    private String sharedKey;
     private String callbackUrl;
-    private String pathCallbackUrl;
-    private String pathRecurrentCallbackUrl;
-    private String pathNotificationAcsUrl;
-    private String pathPrepareAcsUrl;
-    private String pathResultAcsUrl;
-    private String returnUrl;
-
+    private String pathThreeDsMethodUrl;
+    private String pathAcsUrl;
 }
