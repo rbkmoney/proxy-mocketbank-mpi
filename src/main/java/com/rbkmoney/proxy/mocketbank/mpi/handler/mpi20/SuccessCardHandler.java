@@ -9,9 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Base64;
 import java.util.List;
-
-import static io.github.benas.randombeans.api.EnhancedRandom.random;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,10 +27,15 @@ public class SuccessCardHandler implements CardHandler {
                         && c.getAction().equals(MpiAction.THREE_D_SECURE_2_0_SUCCESS.getAction()));
     }
 
+    @Override
+    public boolean isHandle(ResultRequest request) {
+        return isHandle(extractPan(request.getThreeDSServerTransID()));
+    }
+
     @SneakyThrows
     @Override
     public PreparationResponse prepareHandle(PreparationRequest request) {
-        String threeDSServerTransID = random(String.class);
+        String threeDSServerTransID = buildTransId(request.getPan());
         return PreparationResponse.builder()
                 .threeDSServerTransID(threeDSServerTransID)
                 .protocolVersion("2")
@@ -57,5 +61,13 @@ public class SuccessCardHandler implements CardHandler {
                 .transactionId(request.getThreeDSServerTransID())
                 .transStatus(TransactionStatus.AUTHENTICATION_SUCCESSFUL.getCode())
                 .build();
+    }
+
+    private String buildTransId(String pan) {
+        return Base64.getEncoder().encodeToString(pan.getBytes());
+    }
+
+    private String extractPan(String transId) {
+        return new String(Base64.getDecoder().decode(transId));
     }
 }

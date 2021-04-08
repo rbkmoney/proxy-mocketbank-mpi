@@ -2,7 +2,6 @@ package com.rbkmoney.proxy.mocketbank.mpi.controller;
 
 import com.rbkmoney.proxy.mocketbank.mpi.handler.mpi20.CardHandler;
 import com.rbkmoney.proxy.mocketbank.mpi.model.mpi20.*;
-import com.rbkmoney.proxy.mocketbank.mpi.service.CardStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +16,14 @@ import java.util.List;
 public class Mpi20Controller {
 
     private final List<CardHandler> cardHandlers;
-    private final CardStorage cardStorage;
 
     @PostMapping(value = "/prepare")
     public PreparationResponse prepare(@RequestBody PreparationRequest preparationRequest) {
-        PreparationResponse preparationResponse = cardHandlers.stream()
+        return cardHandlers.stream()
                 .filter(c -> c.isHandle(preparationRequest.getPan()))
                 .findFirst()
                 .map(c -> c.prepareHandle(preparationRequest))
                 .orElseThrow();
-        cardStorage.save(preparationRequest.getPan(), preparationResponse.getThreeDSServerTransID());
-        return preparationResponse;
     }
 
     @PostMapping(value = "/auth")
@@ -42,7 +38,7 @@ public class Mpi20Controller {
     @PostMapping(value = "/result")
     public ResultResponse result(@RequestBody ResultRequest resultRequest) {
         return cardHandlers.stream()
-                .filter(c -> c.isHandle(cardStorage.getCard(resultRequest.getThreeDSServerTransID())))
+                .filter(c -> c.isHandle(resultRequest))
                 .findFirst()
                 .map(c -> c.resultHandle(resultRequest))
                 .orElseThrow();
@@ -68,7 +64,7 @@ public class Mpi20Controller {
         model.setViewName("acs_2.0_form");
         model.addObject("action", termUrl);
         model.addObject("pan", "XXXX XXXX XXXX XXXX");
-        model.addObject("cres", "cres_value");
+        model.addObject("cres", creq);
         log.info("Form ACS 2.0 show the form");
         return model;
     }
