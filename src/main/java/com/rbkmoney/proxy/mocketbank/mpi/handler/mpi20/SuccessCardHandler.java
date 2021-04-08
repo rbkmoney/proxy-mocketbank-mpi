@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,13 +29,13 @@ public class SuccessCardHandler implements CardHandler {
 
     @Override
     public boolean isHandle(ResultRequest request) {
-        return isHandle(extractPan(request.getThreeDSServerTransID()));
+        return request.getThreeDSServerTransID().startsWith(MpiAction.THREE_D_SECURE_2_0_SUCCESS.getAction());
     }
 
     @SneakyThrows
     @Override
     public PreparationResponse prepareHandle(PreparationRequest request) {
-        String threeDSServerTransID = buildTransId(request.getPan());
+        String threeDSServerTransID = buildTransId();
         return PreparationResponse.builder()
                 .threeDSServerTransID(threeDSServerTransID)
                 .protocolVersion("2")
@@ -63,11 +63,7 @@ public class SuccessCardHandler implements CardHandler {
                 .build();
     }
 
-    private String buildTransId(String pan) {
-        return Base64.getEncoder().encodeToString(pan.getBytes());
-    }
-
-    private String extractPan(String transId) {
-        return new String(Base64.getDecoder().decode(transId));
+    private String buildTransId() {
+        return MpiAction.THREE_D_SECURE_2_0_SUCCESS.getAction() + UUID.randomUUID().toString();
     }
 }
