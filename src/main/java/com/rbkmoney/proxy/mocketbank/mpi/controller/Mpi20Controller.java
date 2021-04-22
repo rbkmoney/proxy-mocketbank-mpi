@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -54,9 +55,11 @@ public class Mpi20Controller {
                 threeDSMethodData, termUrl, terminationUri);
         ModelAndView model = new ModelAndView();
         model.setViewName("threeDsMethod_2.0_form");
-        model.addObject(ACTION, termUrl);
+        model.addObject(ACTION, UriComponentsBuilder.fromUriString(termUrl)
+                .path(terminationUri)
+                .build()
+                .toUriString());
         model.addObject(THREE_DS_METHOD_DATA, threeDSMethodData);
-        model.addObject(TERMINATION_URI, terminationUri);
         log.info("Form threeDsMethod 2.0 show the form");
         return model;
     }
@@ -68,10 +71,12 @@ public class Mpi20Controller {
         log.info("Form ACS 2.0 input params: creq {}, termUrl {}, terminationUri {}", creq, termUrl, terminationUri);
         ModelAndView model = new ModelAndView();
         model.setViewName("acs_2.0_form");
-        model.addObject(ACTION, termUrl);
+        model.addObject(ACTION, UriComponentsBuilder.fromUriString(termUrl)
+                .path(terminationUri)
+                .build()
+                .toUriString());
         model.addObject(PAN, "XXXX XXXX XXXX XXXX");
         model.addObject(CREQ, creq);
-        model.addObject(TERMINATION_URI, terminationUri);
         log.info("Form ACS 2.0 show the form");
         return model;
     }
