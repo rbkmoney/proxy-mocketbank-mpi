@@ -9,6 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
+import static com.rbkmoney.proxy.mocketbank.mpi.utils.constant.MpiV2RequestParams.*;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -45,26 +47,30 @@ public class Mpi20Controller {
     }
 
     @RequestMapping(value = "/three_ds_method", method = RequestMethod.POST)
-    public ModelAndView threeDsMethod(@RequestParam(value = "threeDSMethodData") String threeDSMethodData,
-                                @RequestParam(value = "termUrl") String termUrl) {
+    public ModelAndView threeDsMethod(@RequestParam(value = THREE_DS_METHOD_DATA) String threeDSMethodData,
+                                @RequestParam(value = TERM_URL) String termUrl,
+                                @RequestParam(value = TERMINATION_URI) String terminationUri) {
         log.info("Form threeDsMethod 2.0 input params: threeDSMethodData {}, termUrl {}", threeDSMethodData, termUrl);
         ModelAndView model = new ModelAndView();
         model.setViewName("threeDsMethod_2.0_form");
-        model.addObject("action", termUrl);
-        model.addObject("threeDSMethodData", threeDSMethodData);
+        model.addObject(ACTION, termUrl);
+        model.addObject(THREE_DS_METHOD_DATA, threeDSMethodData);
+        model.addObject(TERMINATION_URI, terminationUri);
         log.info("Form threeDsMethod 2.0 show the form");
         return model;
     }
 
     @RequestMapping(value = "/acs", method = RequestMethod.POST)
-    public ModelAndView acs(@RequestParam(value = "creq") String creq,
-                            @RequestParam(value = "termUrl") String termUrl) {
+    public ModelAndView acs(@RequestParam(value = CREQ) String creq,
+                            @RequestParam(value = TERM_URL) String termUrl,
+                            @RequestParam(value = TERMINATION_URI) String terminationUri) {
         log.info("Form ACS 2.0 input params: creq {}, termUrl {}", creq, termUrl);
         ModelAndView model = new ModelAndView();
         model.setViewName("acs_2.0_form");
-        model.addObject("action", termUrl);
-        model.addObject("pan", "XXXX XXXX XXXX XXXX");
-        model.addObject("cres", creq);
+        model.addObject(ACTION, termUrl);
+        model.addObject(PAN, "XXXX XXXX XXXX XXXX");
+        model.addObject(CREQ, creq);
+        model.addObject(TERMINATION_URI, terminationUri);
         log.info("Form ACS 2.0 show the form");
         return model;
     }
