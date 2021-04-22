@@ -56,7 +56,7 @@ public class Mpi20Controller {
         ModelAndView model = new ModelAndView();
         model.setViewName("threeDsMethod_2.0_form");
         model.addObject(ACTION, UriComponentsBuilder.fromUriString(termUrl)
-                .path(terminationUri)
+                .queryParam(TERMINATION_URI, terminationUri)
                 .build()
                 .toUriString());
         model.addObject(THREE_DS_METHOD_DATA, threeDSMethodData);
@@ -72,7 +72,7 @@ public class Mpi20Controller {
         ModelAndView model = new ModelAndView();
         model.setViewName("acs_2.0_form");
         model.addObject(ACTION, UriComponentsBuilder.fromUriString(termUrl)
-                .path(terminationUri)
+                .queryParam(TERMINATION_URI, terminationUri)
                 .build()
                 .toUriString());
         model.addObject(PAN, "XXXX XXXX XXXX XXXX");
