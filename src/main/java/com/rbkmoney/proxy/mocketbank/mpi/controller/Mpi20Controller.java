@@ -48,9 +48,10 @@ public class Mpi20Controller {
 
     @RequestMapping(value = "/three_ds_method", method = RequestMethod.POST)
     public ModelAndView threeDsMethod(@RequestParam(value = THREE_DS_METHOD_DATA) String threeDSMethodData,
-                                @RequestParam(value = TERM_URL) String termUrl,
-                                @RequestParam(value = TERMINATION_URI) String terminationUri) {
-        log.info("Form threeDsMethod 2.0 input params: threeDSMethodData {}, termUrl {}", threeDSMethodData, termUrl);
+                                      @RequestParam(value = TERM_URL) String termUrl,
+                                      @RequestParam(value = TERMINATION_URI) String terminationUri) {
+        log.info("Form threeDsMethod 2.0 input params: threeDSMethodData {}, termUrl {}, terminationUri {}",
+                threeDSMethodData, termUrl, terminationUri);
         ModelAndView model = new ModelAndView();
         model.setViewName("threeDsMethod_2.0_form");
         model.addObject(ACTION, termUrl);
@@ -64,7 +65,7 @@ public class Mpi20Controller {
     public ModelAndView acs(@RequestParam(value = CREQ) String creq,
                             @RequestParam(value = TERM_URL) String termUrl,
                             @RequestParam(value = TERMINATION_URI) String terminationUri) {
-        log.info("Form ACS 2.0 input params: creq {}, termUrl {}", creq, termUrl);
+        log.info("Form ACS 2.0 input params: creq {}, termUrl {}, terminationUri {}", creq, termUrl, terminationUri);
         ModelAndView model = new ModelAndView();
         model.setViewName("acs_2.0_form");
         model.addObject(ACTION, termUrl);
