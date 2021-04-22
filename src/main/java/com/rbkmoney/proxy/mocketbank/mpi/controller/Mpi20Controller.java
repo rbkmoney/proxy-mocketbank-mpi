@@ -60,6 +60,7 @@ public class Mpi20Controller {
                 .build()
                 .toUriString());
         model.addObject(THREE_DS_METHOD_DATA, threeDSMethodData);
+        model.addObject(TERMINATION_URI, terminationUri);
         log.info("Form threeDsMethod 2.0 show the form");
         return model;
     }
@@ -77,6 +78,7 @@ public class Mpi20Controller {
                 .toUriString());
         model.addObject(PAN, "XXXX XXXX XXXX XXXX");
         model.addObject(CREQ, creq);
+        model.addObject(TERMINATION_URI, terminationUri);
         log.info("Form ACS 2.0 show the form");
         return model;
     }
