@@ -12,6 +12,7 @@ import com.rbkmoney.proxy.mocketbank.mpi.utils.constant.MpiEnrollmentStatus;
 import com.rbkmoney.proxy.mocketbank.mpi.utils.constant.MpiTransactionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -99,22 +100,41 @@ public class MpiController {
     public ModelAndView formAcs(
             @RequestParam(value = "PaReq") String paReq,
             @RequestParam(value = "MD") String md,
-            @RequestParam(value = "TermUrl") String termUrl
+            @RequestParam(value = "TermUrl") String termUrl,
+            @RequestParam(value = "CallbackMethod", defaultValue = "POST") String callbackMethod
     ) {
-        log.info("Form ACS input params: paReq {}, MD {}, TermUrl {}", paReq, md, termUrl);
+        log.info("Form ACS input params: paReq {}, MD {}, TermUrl {}, callbackMethod {}",
+                paReq, md, termUrl, callbackMethod);
         ModelAndView model = new ModelAndView();
         if (!termUrl.startsWith("https://")) {
             log.warn("Form ACS, wrong termUrl {}", termUrl);
             model.setViewName("empty");
             return model;
         }
-        model.setViewName("acs_form");
+        String acsFormName = getAcsFormName(callbackMethod);
+        if (acsFormName == null) {
+            log.error("Unsupported callback method {}", callbackMethod);
+            model.setViewName("empty");
+            return model;
+        }
+        model.setViewName(acsFormName);
         model.addObject("action", termUrl);
         model.addObject("pan", "XXXX XXXX XXXX XXXX");
         model.addObject("PaRes", "PaRes");
         model.addObject("MD", md);
         log.info("Form ACS show the form");
         return model;
+    }
+
+    private String getAcsFormName(String callbackMethod) {
+        HttpMethod httpMethod = HttpMethod.resolve(callbackMethod.toUpperCase());
+        if (HttpMethod.GET.equals(httpMethod)) {
+            return "acs_form_get_callback";
+        }
+        if (HttpMethod.POST.equals(httpMethod)) {
+            return "acs_form_post_callback";
+        }
+        return null;
     }
 
 }

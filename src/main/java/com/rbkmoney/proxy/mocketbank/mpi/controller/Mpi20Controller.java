@@ -4,6 +4,7 @@ import com.rbkmoney.proxy.mocketbank.mpi.handler.mpi20.CardHandler;
 import com.rbkmoney.proxy.mocketbank.mpi.model.mpi20.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -58,15 +59,33 @@ public class Mpi20Controller {
 
     @RequestMapping(value = "/acs", method = RequestMethod.POST)
     public ModelAndView acs(@RequestParam(value = "creq") String creq,
-                            @RequestParam(value = "TermUrl") String termUrl) {
-        log.info("Form ACS 2.0 input params: creq {}, termUrl {}", creq, termUrl);
+                            @RequestParam(value = "TermUrl") String termUrl,
+                            @RequestParam(value = "CallbackMethod", defaultValue = "POST") String callbackMethod) {
+        log.info("Form ACS 2.0 input params: creq {}, termUrl {}, callbackMethod {}", creq, termUrl, callbackMethod);
         ModelAndView model = new ModelAndView();
-        model.setViewName("acs_2.0_form");
+        String acsFormName = getAcsFormName(callbackMethod);
+        if (acsFormName == null) {
+            log.error("Unsupported callback method {}", callbackMethod);
+            model.setViewName("empty");
+            return model;
+        }
+        model.setViewName(acsFormName);
         model.addObject("action", termUrl);
         model.addObject("pan", "XXXX XXXX XXXX XXXX");
         model.addObject("cres", creq);
         log.info("Form ACS 2.0 show the form");
         return model;
+    }
+
+    private String getAcsFormName(String callbackMethod) {
+        HttpMethod httpMethod = HttpMethod.resolve(callbackMethod.toUpperCase());
+        if (HttpMethod.GET.equals(httpMethod)) {
+            return "acs_2.0_form_get_callback";
+        }
+        if (HttpMethod.POST.equals(httpMethod)) {
+            return "acs_2.0_form_post_callback";
+        }
+        return null;
     }
 
 }
