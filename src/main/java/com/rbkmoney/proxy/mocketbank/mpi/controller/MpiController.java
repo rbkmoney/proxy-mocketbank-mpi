@@ -95,7 +95,7 @@ public class MpiController {
         return response;
     }
 
-    @RequestMapping(value = "acs", method = RequestMethod.POST)
+    @RequestMapping(value = "acs", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView formAcs(
             @RequestParam(value = "PaReq") String paReq,
             @RequestParam(value = "MD") String md,
